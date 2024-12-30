@@ -27,9 +27,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000028  00000000  00000000  0000c078  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000bd79  00000000  00000000  0000c0a0  2**0
+ 12 .debug_info   0000bd5c  00000000  00000000  0000c0a0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00001ddd  00000000  00000000  00017e19  2**0
+ 13 .debug_abbrev 00001dfa  00000000  00000000  00017dfc  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  14 .debug_aranges 00000a68  00000000  00000000  00019bf8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -4921,7 +4921,7 @@ void lcdPrintUpdate(uint8_t x, uint8_t y, char message[], uint8_t fontsize){
 	...
 
 080026c0 <page0draw.12>:
-void page0draw(){
+void page0draw(void){
  80026c0:	b5f0      	push	{r4, r5, r6, r7, lr}
  80026c2:	b0ad      	sub	sp, #180	@ 0xb4
  80026c4:	af00      	add	r7, sp, #0
@@ -5546,7 +5546,7 @@ void page0draw(){
  8002ba0:	48000800 	.word	0x48000800
 
 08002ba4 <pageMenuDraw.13>:
-void pageMenuDraw(){//menu
+void pageMenuDraw(void){//menu
  8002ba4:	b590      	push	{r4, r7, lr}
  8002ba6:	b083      	sub	sp, #12
  8002ba8:	af00      	add	r7, sp, #0
@@ -5655,7 +5655,7 @@ void pageMenuDraw(){//menu
  8002c80:	080080b4 	.word	0x080080b4
 
 08002c84 <pageCalibrationDraw.14>:
-void pageCalibrationDraw(){//calibration
+void pageCalibrationDraw(void){//calibration
  8002c84:	b5f0      	push	{r4, r5, r6, r7, lr}
  8002c86:	b093      	sub	sp, #76	@ 0x4c
  8002c88:	af02      	add	r7, sp, #8
@@ -6056,7 +6056,7 @@ void pageCalibrationDraw(){//calibration
  8002ff8:	08008104 	.word	0x08008104
 
 08002ffc <zero.1>:
-void zero(){
+void zero(void){
  8002ffc:	b5f0      	push	{r4, r5, r6, r7, lr}
  8002ffe:	b089      	sub	sp, #36	@ 0x24
  8003000:	af00      	add	r7, sp, #0
@@ -6166,7 +6166,7 @@ void zero(){
  80030d8:	0800811c 	.word	0x0800811c
 
 080030dc <zero0.2>:
-void zero0(){
+void zero0(void){
  80030dc:	b5f0      	push	{r4, r5, r6, r7, lr}
  80030de:	b089      	sub	sp, #36	@ 0x24
  80030e0:	af00      	add	r7, sp, #0
@@ -6278,7 +6278,7 @@ void zero0(){
  80031bc:	0800811c 	.word	0x0800811c
 
 080031c0 <init.3>:
-void init(){
+void init(void){
  80031c0:	b5f0      	push	{r4, r5, r6, r7, lr}
  80031c2:	b089      	sub	sp, #36	@ 0x24
  80031c4:	af00      	add	r7, sp, #0
@@ -6388,7 +6388,7 @@ void init(){
  800329c:	0800811c 	.word	0x0800811c
 
 080032a0 <zero2.4>:
-void zero2(){
+void zero2(void){
  80032a0:	b5f0      	push	{r4, r5, r6, r7, lr}
  80032a2:	b089      	sub	sp, #36	@ 0x24
  80032a4:	af00      	add	r7, sp, #0
@@ -6500,7 +6500,7 @@ void zero2(){
  8003380:	0800811c 	.word	0x0800811c
 
 08003384 <pageCalib50draw.15>:
-void pageCalib50draw(){
+void pageCalib50draw(void){
  8003384:	b590      	push	{r4, r7, lr}
  8003386:	b085      	sub	sp, #20
  8003388:	af02      	add	r7, sp, #8
@@ -6776,7 +6776,7 @@ void pageCalib50draw(){
  80035dc:	080080ac 	.word	0x080080ac
 
 080035e0 <setPGSfunk.5>:
-void setPGSfunk(){
+void setPGSfunk(void){
  80035e0:	b5f0      	push	{r4, r5, r6, r7, lr}
  80035e2:	b08b      	sub	sp, #44	@ 0x2c
  80035e4:	af00      	add	r7, sp, #0
@@ -6959,7 +6959,7 @@ void setPGSfunk(){
  8003764:	080081a0 	.word	0x080081a0
 
 08003768 <pageSettingsDraw.16>:
-void pageSettingsDraw(){
+void pageSettingsDraw(void){
  8003768:	b590      	push	{r4, r7, lr}
  800376a:	b083      	sub	sp, #12
  800376c:	af00      	add	r7, sp, #0
@@ -7085,7 +7085,7 @@ void pageSettingsDraw(){
  8003874:	080081dc 	.word	0x080081dc
 
 08003878 <oemUserQuestion.6>:
-void oemUserQuestion(){
+void oemUserQuestion(void){
  8003878:	b5f0      	push	{r4, r5, r6, r7, lr}
  800387a:	b089      	sub	sp, #36	@ 0x24
  800387c:	af00      	add	r7, sp, #0
@@ -7213,7 +7213,7 @@ void oemUserQuestion(){
  8003980:	08008200 	.word	0x08008200
 
 08003984 <oem.7>:
-void oem(){
+void oem(void){
  8003984:	b5f0      	push	{r4, r5, r6, r7, lr}
  8003986:	b089      	sub	sp, #36	@ 0x24
  8003988:	af00      	add	r7, sp, #0
@@ -7326,7 +7326,7 @@ void oem(){
  8003a6c:	08008200 	.word	0x08008200
 
 08003a70 <user.8>:
-void user(){
+void user(void){
  8003a70:	b5f0      	push	{r4, r5, r6, r7, lr}
  8003a72:	b089      	sub	sp, #36	@ 0x24
  8003a74:	af00      	add	r7, sp, #0
@@ -7439,7 +7439,7 @@ void user(){
  8003b58:	08008200 	.word	0x08008200
 
 08003b5c <LOWPWR0.9>:
-void LOWPWR0(){
+void LOWPWR0(void){
  8003b5c:	b5f0      	push	{r4, r5, r6, r7, lr}
  8003b5e:	b089      	sub	sp, #36	@ 0x24
  8003b60:	af00      	add	r7, sp, #0
@@ -7552,7 +7552,7 @@ void LOWPWR0(){
  8003c40:	08008200 	.word	0x08008200
 
 08003c44 <LOWPWR1.11>:
-void LOWPWR1(){
+void LOWPWR1(void){
  8003c44:	b5f0      	push	{r4, r5, r6, r7, lr}
  8003c46:	b089      	sub	sp, #36	@ 0x24
  8003c48:	af00      	add	r7, sp, #0
@@ -7665,7 +7665,7 @@ void LOWPWR1(){
  8003d28:	08008200 	.word	0x08008200
 
 08003d2c <pageParamsDraw.17>:
-void pageParamsDraw(){
+void pageParamsDraw(void){
  8003d2c:	b5f0      	push	{r4, r5, r6, r7, lr}
  8003d2e:	b0a7      	sub	sp, #156	@ 0x9c
  8003d30:	af00      	add	r7, sp, #0

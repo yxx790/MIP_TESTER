@@ -92,7 +92,7 @@ void lcdPrintUpdate(uint8_t x, uint8_t y, char message[], uint8_t fontsize){
 	SSD1306_UpdateScreen();
 }
 
-void page0draw(){
+void page0draw(void){
 	  if (HAL_GetTick()-lastPing > 1000){//таймаут опроса опроса
 		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		  uint8_t msg[]={0x46,0x0D};  uint8_t rx_buffer[73]={0};  MX_USART2_UART_Init();
@@ -159,7 +159,7 @@ void page0draw(){
 		  SSD1306_UpdateScreen();
 	  }
 }
-void pageMenuDraw(){//menu
+void pageMenuDraw(void){//menu
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	lcdPrint(0, 0,  " calibration CH4", 1);
 	lcdPrint(0, 10, " settings", 1);
@@ -179,7 +179,7 @@ void pageMenuDraw(){//menu
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 }
 
-void pageCalibrationDraw(){//calibration
+void pageCalibrationDraw(void){//calibration
 //	lcdPrint(0, 0,  "    CALIBRATION", 1);
 	lcdPrint(57, 0, " Help",   1);	if (selected == 1) {lcdPrint(57, 0, "-", 1);};
 	lcdPrint(0, 0, " Zero  ",  1);	if (selected == 2) {lcdPrint(0, 0, "-", 1);};
@@ -209,7 +209,7 @@ void pageCalibrationDraw(){//calibration
 	SSD1306_DrawLine(0, 20, 55, 20, 1); SSD1306_DrawLine(0, 52, 55, 52, 1); SSD1306_DrawLine(55, 10, 128, 10, 1);	SSD1306_DrawLine(55, 0, 55, 64, 1);	SSD1306_DrawLine(55, 30, 128, 30, 1);
 	SSD1306_UpdateScreen();
 }
-void zero(){
+void zero(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[]="ZERO\r";
@@ -224,7 +224,7 @@ void zero(){
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 	HAL_Delay(1000);
 }
-void zero0(){
+void zero0(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[]="ZERO0\r";
@@ -239,7 +239,7 @@ void zero0(){
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 	HAL_Delay(1000);
 }
-void init(){
+void init(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[]="INIT\r";
@@ -254,7 +254,7 @@ void init(){
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 	HAL_Delay(1000);
 }
-void zero2(){
+void zero2(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[]="ZERO2\r";
@@ -269,7 +269,7 @@ void zero2(){
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 	HAL_Delay(1000);
 }
-void pageCalib50draw(){
+void pageCalib50draw(void){
 	lcdPrint(0, 0, " SET NKPR for CH4",   1);
 
 	lcdPrint(0, 12, " 45",   1);	if (selected == 1) {lcdPrint(0, 11, "-", 1);};
@@ -290,7 +290,7 @@ void pageCalib50draw(){
 
 	SSD1306_UpdateScreen();
 }
-void setPGSfunk(){
+void setPGSfunk(void){
 	SSD1306_Clear();
 	while (HAL_GetTick()-lastPing < 1100) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
@@ -312,7 +312,7 @@ void setPGSfunk(){
 	SSD1306_Clear();
 }
 
-void pageSettingsDraw(){
+void pageSettingsDraw(void){
 	lcdPrint(0, 50, " Exit", 	 1);		if (selected == 0) {lcdPrint(0, 50, "-", 1);};
 	lcdPrint(0, 0,	" OEM/USR?",   1);		if (selected == 1) {lcdPrint(0, 0, "-", 1);};
 	lcdPrint(0, 10, " set OEM",	 1);		if (selected == 2) {lcdPrint(0, 10, "-", 1);};
@@ -321,7 +321,7 @@ void pageSettingsDraw(){
 	lcdPrint(0, 40, " LOWPWR_1",	 1);	if (selected == 5) {lcdPrint(0, 40, "-", 1);};
 	SSD1306_UpdateScreen();
 }
-void oemUserQuestion(){
+void oemUserQuestion(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		lcdPrint(7, 0,	"        ",   1);
@@ -335,7 +335,7 @@ void oemUserQuestion(){
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 		HAL_Delay(1000);
 }
-void oem(){
+void oem(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		lcdPrint(7, 10,	"        ",   1);
@@ -350,7 +350,7 @@ void oem(){
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 		HAL_Delay(1000);
 }
-void user(){
+void user(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		lcdPrint(7, 20,	"        ",   1);
@@ -364,7 +364,7 @@ void user(){
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 		HAL_Delay(1000);
 }
-void LOWPWR0(){
+void LOWPWR0(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 		lcdPrint(7, 30,	"        ",   1);
 		uint8_t rx_buff[15]={0};
@@ -380,7 +380,7 @@ void LOWPWR0(){
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 		HAL_Delay(1000);
 }
-void LOWPWR1(){
+void LOWPWR1(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 		lcdPrint(7, 40,	"        ",   1);
 		uint8_t rx_buff[15]={0};
@@ -397,7 +397,7 @@ void LOWPWR1(){
 		HAL_Delay(1000);
 }
 
-void pageParamsDraw(){
+void pageParamsDraw(void){
 	if (HAL_GetTick()-lastPing > 1100){//таймаут опроса опроса
 		 HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		 uint8_t msg[]={0x46,0x0D};  uint8_t rx_buffer[73]={0};  MX_USART2_UART_Init();
