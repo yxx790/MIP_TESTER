@@ -49,8 +49,9 @@ UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 _Bool short_state = 0; _Bool long_state = 0; uint32_t time_key1 = 0; //для кнопки
-uint8_t page = 0; uint8_t selected = 0; uint8_t calibRestriction = 3;
+uint8_t page = 0; uint8_t selected = 0; uint8_t digitSelected = 0 ;uint8_t calibRestriction = 3;
 uint32_t lastPing = 0;
+uint8_t volPercent[]="0244";
 
 
 
@@ -85,8 +86,20 @@ void lcdPrint(uint8_t x, uint8_t y, char message[], uint8_t fontsize){
 	if 		(fontsize == 1) {SSD1306_Puts(message , &Font_7x10, 1);}
 	else if (fontsize == 2) {SSD1306_Puts(message , &Font_11x18, 1);}
 	else if (fontsize == 3) {SSD1306_Puts(message , &Font_16x26, 1);}
-
+	else if	(fontsize == 10) {SSD1306_Puts(message , &Font_7x10, 0);}
+	else if (fontsize == 20) {SSD1306_Puts(message , &Font_11x18, 0);}
+	else if (fontsize == 30) {SSD1306_Puts(message , &Font_16x26, 0);}
 }
+void lcdPrintSymbol(uint8_t x, uint8_t y, char Symbol, uint8_t fontsize){
+	SSD1306_GotoXY(x, y);
+	if 		(fontsize == 1) {SSD1306_Putc(Symbol , &Font_7x10, 1);}
+	else if (fontsize == 2) {SSD1306_Putc(Symbol , &Font_11x18, 1);}
+	else if (fontsize == 3) {SSD1306_Putc(Symbol , &Font_16x26, 1);}
+	else if	(fontsize == 10) {SSD1306_Putc(Symbol , &Font_7x10, 0);}
+	else if (fontsize == 20) {SSD1306_Putc(Symbol , &Font_11x18, 0);}
+	else if (fontsize == 30) {SSD1306_Putc(Symbol , &Font_16x26, 0);}
+}
+
 void lcdPrintUpdate(uint8_t x, uint8_t y, char message[], uint8_t fontsize){
 	lcdPrint(x, y, message, fontsize);
 	SSD1306_UpdateScreen();
@@ -161,7 +174,7 @@ void page0draw(void){
 }
 void pageMenuDraw(void){//menu
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
-	lcdPrint(0, 0,  " calibration CH4", 1);
+	lcdPrint(0, 0,  " calibration", 1);
 	lcdPrint(0, 10, " settings", 1);
 	lcdPrint(0, 20, " parameters", 1);
 //	lcdPrint(0, 30, " rezerv1", 1);
@@ -183,7 +196,7 @@ void pageCalibrationDraw(void){//calibration
 //	lcdPrint(0, 0,  "    CALIBRATION", 1);
 	lcdPrint(57, 0, " Help",   1);	if (selected == 1) {lcdPrint(57, 0, "-", 1);};
 	lcdPrint(0, 0, " Zero  ",  1);	if (selected == 2) {lcdPrint(0, 0, "-", 1);};
-	lcdPrint(0, 10, " Set 50", 1);	if (selected == 3) {lcdPrint(0, 10, "-", 1);};
+	lcdPrint(0, 10, " Calib", 1);	if (selected == 3) {lcdPrint(0, 10, "-", 1);};
 	lcdPrint(0, 22, " Zero0 ",  1);	if (selected == 4) {lcdPrint(0, 22, "-", 1);};
 	lcdPrint(0, 32, " Init  ",  1);	if (selected == 5) {lcdPrint(0, 32, "-", 1);};
 	lcdPrint(0, 42, " Zero2 ",  1);	if (selected == 6) {lcdPrint(0, 42, "-", 1);};
@@ -269,44 +282,44 @@ void zero2(void){
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 	HAL_Delay(1000);
 }
+
 void pageCalib50draw(void){
-	lcdPrint(0, 0, " SET NKPR for CH4",   1);
-
-	lcdPrint(0, 12, " 45",   1);	if (selected == 1) {lcdPrint(0, 11, "-", 1);};
-	lcdPrint(0, 22, " 46",   1);	if (selected == 2) {lcdPrint(0, 21, "-", 1);};
-	lcdPrint(0, 32, " 47",   1);	if (selected == 3) {lcdPrint(0, 31, "-", 1);};
-	lcdPrint(0, 42, " 48",   1);	if (selected == 4) {lcdPrint(0, 41, "-", 1);};
-	lcdPrint(28, 12, " 49",   1);	if (selected == 5) {lcdPrint(28, 11, "-", 1);};
-	lcdPrint(28, 22, " 50",   1);	if (selected == 6) {lcdPrint(28, 21, "-", 1);};
-	lcdPrint(28, 32, " 51",   1);	if (selected == 7) {lcdPrint(28, 31, "-", 1);};
-	lcdPrint(28, 42, " 52",   1);	if (selected == 8) {lcdPrint(28, 41, "-", 1);};
-	lcdPrint(56, 12, " 53",   1);	if (selected == 9) {lcdPrint(56, 11, "-", 1);};
-	lcdPrint(56, 22, " 54",   1);	if (selected == 10) {lcdPrint(56, 21, "-", 1);};
-	lcdPrint(56, 32, " 55",   1);	if (selected == 11) {lcdPrint(56, 31, "-", 1);};
-	lcdPrint(56, 42, " 56",   1);	if (selected == 12) {lcdPrint(56, 41, "-", 1);};
-
-	lcdPrint(0, 53, " Exit",   1);	if (selected == 0) {lcdPrint(0, 53, "-", 1);};
-	SSD1306_DrawLine(0, 10, 128, 10, 1); SSD1306_DrawLine(0, 51, 128, 51, 1);
-
+	uint8_t Y = 22;
+	lcdPrint(0, 0, "VOL PERCENT", 2);
+	selected == 1 ?	lcdPrintSymbol(35, Y, volPercent[0], 20)	:	lcdPrintSymbol(35, Y, volPercent[0], 2);
+	selected == 2 ? lcdPrintSymbol(35+11, Y, volPercent[1], 20)	:	lcdPrintSymbol(35+11, Y, volPercent[1], 2);
+	lcdPrint	  (35+22, Y, ",", 2);
+	selected == 3 ? lcdPrintSymbol(35+33, Y, volPercent[2], 20)	:	lcdPrintSymbol(35+33, Y, volPercent[2], 2);
+	selected == 4 ? lcdPrintSymbol(35+44, Y, volPercent[3], 20)	:	lcdPrintSymbol(35+44, Y, volPercent[3], 2);
+	selected == 0 ? lcdPrint(0,		 64-19, "Exit", 20)			:	lcdPrint(0,		 64-19, "Exit", 2);
+	selected == 5 ? lcdPrint(128-23, 64-19, "OK", 20)			:	lcdPrint(128-23, 64-19, "OK", 2);
+	SSD1306_UpdateScreen();
+}
+void pageDigitSelect(void){
+	lcdPrint(0, 0, "              ", 2);
+	for (uint8_t i = 0; i < 10; i++) {
+		digitSelected == i ? lcdPrintSymbol(4+i*12, 0, i+48, 20)	:	lcdPrintSymbol(4+i*12, 0, i+48, 2);
+	}
 	SSD1306_UpdateScreen();
 }
 void setPGSfunk(void){
 	SSD1306_Clear();
 	while (HAL_GetTick()-lastPing < 1100) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
-
-	uint16_t NKPR = round(193.6+(selected*4.4));
+//	uint16_t NKPR = round(193.6+(selected*4.4));
 	uint8_t msg[10]={0};
-	sprintf (msg, "CALB 0%d\r", NKPR);
-	lcdPrintUpdate(20, 21, msg,   2);
+
+//	sprintf (msg, "CALB %c%c%c%c\r", volPercent[0],volPercent[1],volPercent[2],volPercent[3]);
+	sprintf (msg, "CALB %s\r", volPercent);
+	lcdPrintUpdate(20, 22, msg,   2);
 	HAL_Delay(800);
 	uint8_t rx_buff[15]={0};
 	MX_USART2_UART_Init();
 	HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
 	HAL_UART_Receive(&huart2, rx_buff, 15, 50);
 	lastPing = HAL_GetTick();
-	if (rx_buff[10]==0x4F && rx_buff[11]==0x4B){lcdPrintUpdate(10, 21, "    OK    ",  2); page = 2; selected = 3;}
-	else {lcdPrintUpdate(10, 21, "  FAULT    ",  2); page = 2; selected = 3;}
+	if (rx_buff[10]==0x4F && rx_buff[11]==0x4B){lcdPrintUpdate(10, 22, "    OK    ",  2); page = 2; selected = 3;}
+	else {lcdPrintUpdate(10, 22, "  FAULT    ",  2);}
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 	HAL_Delay(1000);
 	SSD1306_Clear();
@@ -445,8 +458,8 @@ void pageParamsDraw(void){
   SSD1306_Init();
 
   lcdPrint(35, 0, "BOBER", 2);
-  lcdPrint(35, 18, "kurwa", 2);
-  lcdPrint(18, 38, "TESTER v2", 2);
+  lcdPrint(35, 19, "KURWA", 2);
+  lcdPrint(9, 38, "TESTER v13", 2);
   SSD1306_UpdateScreen();
   HAL_Delay(500);
 //  HAL_Delay(2000);//нужно для холодной загрузки мипа
@@ -476,13 +489,17 @@ while (1){
 	  else if 	(page == 2 && selected == 0)	{page = 1; selected = 1; calibRestriction = 3; SSD1306_Clear();}//exit to menu
 	  else if 	(page == 2 && selected == 1)	{}													//help
 	  else if 	(page == 2 && selected == 2)	{lcdPrintUpdate(0, 0, "|", 1); zero();}				//zero
-	  else if 	(page == 2 && selected == 3)	{page = 20; selected = 0; SSD1306_Clear();}			//set 50 page
+	  else if 	(page == 2 && selected == 3)	{page = 20; selected = 1; SSD1306_Clear();}			//set 50 page
 	  else if 	(page == 2 && selected == 4)	{lcdPrintUpdate(0, 22, "|", 1); zero0();}			//zero0
 	  else if 	(page == 2 && selected == 5)	{lcdPrintUpdate(0, 32, "|", 1); init();}			//init
 	  else if 	(page == 2 && selected == 6)	{lcdPrintUpdate(0, 42, "|", 1); zero2();}			//zero2
 
-	  else if 	(page == 20 && selected > 0)	{setPGSfunk();}										//set PGS funk
-	  else if 	(page == 20 && selected == 0)	{page = 2; selected = 2; SSD1306_Clear();}			//exit to menu
+	  else if 	(page == 20 && selected == 5)	{setPGSfunk();}										//set PGS funk
+	  else if 	(page == 20 && selected == 0)	{page = 2; selected = 3; SSD1306_Clear();}			//exit to menu
+	  else if 	(page == 20 && selected < 5)	{page = 21; digitSelected = volPercent[selected-1]-48;}				//
+
+
+	  else if 	(page == 21)					{page = 20; volPercent[selected-1] = digitSelected+48;}				//change digit
 
 	  else if 	(page == 3 && selected == 0)	{page = 1; selected = 2; SSD1306_Clear();}			//exit to menu
 	  else if 	(page == 3 && selected == 1)	{lcdPrintUpdate(0, 0, "|", 1); oemUserQuestion();}	//oemUserQuestion
@@ -501,7 +518,8 @@ while (1){
 		if (page==1) {selected++; if (selected > 3) {selected=0;}} 					//menu
 		if (page==2) {selected++; if (selected > calibRestriction) {selected=0;}} 	//calib
 		if (page==3) {selected++; if (selected > 5) {selected=0;}} 					//settingss
-		if (page==20) {selected++;if (selected > 12) {selected=0;}}  				//set 50
+		if (page==20) {selected++;if (selected > 5) {selected=0;}}  				//calib
+		if (page==21) {digitSelected++;if (digitSelected > 9) {digitSelected=0;}}  			//digit
 	  }
 	}
 
@@ -509,6 +527,7 @@ while (1){
 	if (page == 1) {pageMenuDraw();}
 	if (page == 2) {pageCalibrationDraw();}
 	if (page == 20) {pageCalib50draw();}
+	if (page == 21) {pageDigitSelect();}
 	if (page == 3) {pageSettingsDraw();}
 	if (page == 4) {pageParamsDraw();}
     /* USER CODE END WHILE */
