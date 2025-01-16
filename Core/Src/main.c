@@ -282,10 +282,9 @@ void zero2(void){
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 	HAL_Delay(1000);
 }
-
 void pageCalib50draw(void){
 	uint8_t Y = 22;
-	lcdPrint(0, 0, "VOL PERCENT", 2);
+	lcdPrint(0, 0, "VOL.PERCENT", 2);
 	selected == 1 ?	lcdPrintSymbol(35, Y, volPercent[0], 20)	:	lcdPrintSymbol(35, Y, volPercent[0], 2);
 	selected == 2 ? lcdPrintSymbol(35+11, Y, volPercent[1], 20)	:	lcdPrintSymbol(35+11, Y, volPercent[1], 2);
 	lcdPrint	  (35+22, Y, ",", 2);
@@ -306,10 +305,7 @@ void setPGSfunk(void){
 	SSD1306_Clear();
 	while (HAL_GetTick()-lastPing < 1100) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
-//	uint16_t NKPR = round(193.6+(selected*4.4));
 	uint8_t msg[10]={0};
-
-//	sprintf (msg, "CALB %c%c%c%c\r", volPercent[0],volPercent[1],volPercent[2],volPercent[3]);
 	sprintf (msg, "CALB %s\r", volPercent);
 	lcdPrintUpdate(20, 22, msg,   2);
 	HAL_Delay(800);
@@ -324,7 +320,6 @@ void setPGSfunk(void){
 	HAL_Delay(1000);
 	SSD1306_Clear();
 }
-
 void pageSettingsDraw(void){
 	lcdPrint(0, 50, " Exit", 	 1);		if (selected == 0) {lcdPrint(0, 50, "-", 1);};
 	lcdPrint(0, 0,	" OEM/USR?",   1);		if (selected == 1) {lcdPrint(0, 0, "-", 1);};

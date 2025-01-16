@@ -6043,7 +6043,7 @@ void pageCalib50draw(void){
  8002fb6:	197b      	adds	r3, r7, r5
  8002fb8:	2216      	movs	r2, #22
  8002fba:	701a      	strb	r2, [r3, #0]
-	lcdPrint(0, 0, "VOL PERCENT", 2);
+	lcdPrint(0, 0, "VOL.PERCENT", 2);
  8002fbc:	4a4e      	ldr	r2, [pc, #312]	@ (80030f8 <pageCalib50draw.15+0x150>)
  8002fbe:	46a4      	mov	ip, r4
  8002fc0:	2302      	movs	r3, #2
