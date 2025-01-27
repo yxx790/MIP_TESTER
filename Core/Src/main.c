@@ -53,10 +53,6 @@ uint8_t page = 0; uint8_t selected = 0; uint8_t digitSelected = 0 ;uint8_t calib
 uint32_t lastPing = 0;
 uint8_t volPercent[]="0244";
 
-
-
-
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -119,21 +115,17 @@ void page0draw(void){
 		  strncpy(C , &rx_buffer[43] , 5);
 		  strncpy(C1 , &rx_buffer[49] , 5);
 		  lcdPrint(0, 0, "C:        C1:", 1);
-		  lcdPrint(21, 0, C, 1);
-		  lcdPrint(91, 0, C1, 1);
+		  lcdPrint(21, 0, C, 1); lcdPrint(91, 0, C1, 1);
 //		  	  lcdPrint(0, 0, rx_buffer, 1);//показать буфер
 
 		  char sn1[5]={0};	  char sn2[5]={0};
 		  strncpy(sn1 , &rx_buffer[61] , 4);
 		  strncpy(sn2 , &rx_buffer[65] , 4);
-		  lcdPrint(0, 13, "02", 2);
-		  lcdPrint(28, 13, sn1, 2);
-		  lcdPrint(78, 13, sn2, 2);
+		  lcdPrint(0, 13, "02", 2); lcdPrint(28, 13, sn1, 2); lcdPrint(78, 13, sn2, 2);
 
 		  uint8_t status[6]={0};
 		  strncpy(status , &rx_buffer[55] , 5);
-		  lcdPrint(0, 33, "status:", 1);
-		  lcdPrint(49, 33, status, 1);
+		  lcdPrint(0, 33, "status:", 1); lcdPrint(49, 33, status, 1);
 
 	//	  char message[20]="";
 		  char message[20]={0};
@@ -165,8 +157,7 @@ void page0draw(void){
 		  strncpy(Um , &rx_buffer[19] , 5);
 		  strncpy(Ur , &rx_buffer[13] , 5);
 		  lcdPrint(0, 53, "Um:       Ur:", 1);
-		  lcdPrint(21, 53, Um, 1);
-		  lcdPrint(91, 53, Ur, 1);
+		  lcdPrint(21, 53, Um, 1); lcdPrint(91, 53, Ur, 1);
 
 		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 		  SSD1306_UpdateScreen();
@@ -214,8 +205,10 @@ void pageCalibrationDraw(void){//calibration
 		char C1[6]; 	strncpy(C1, &rx_bufferA[0] , 5); 	lcdPrint(71, 33, "C1:", 1);		 lcdPrint(92, 33, C1, 1);
 		char Temp[6]; 	strncpy(Temp, &rx_bufferA[6] , 5);	lcdPrint(57, 43, "Temp:", 1);	 lcdPrint(92, 43, Temp, 1);
 		char Stat[6]; 	strncpy(Stat, &rx_bufferA[12] , 5);	lcdPrint(57, 53, "Stat:", 1);	 lcdPrint(92, 53, Stat, 1);
-		uint16_t NKPR = atoi(C1); NKPR = round(NKPR/4.4); if(NKPR>999){NKPR=999;} if(C1[0]==0x2D){NKPR=0;}
+//		uint16_t NKPR = atoi(C1); NKPR = round(NKPR/4.4); if(NKPR>999){NKPR=999;} if(C1[0]==0x2D){NKPR=0;}
+		int16_t NKPR = atoi(C1); NKPR = round(NKPR/4.4f); if (C1[0]==0x2D){NKPR=-1;} else if (C1[0]==0x20){NKPR=-11;} else if (NKPR>999){NKPR=999;}
 		char NKPRchar[3];	lcdPrint(92, 12, "   ", 2);	sprintf (NKPRchar, "%d", NKPR);
+//		char NKPRchar[3];	lcdPrint(92, 12, "   ", 2);	sprintf (NKPRchar, "%u", NKPR);
 		lcdPrint(57, 20, "NKPR:", 1);	lcdPrint(92, 12, NKPRchar, 2);
 	}
 
@@ -457,7 +450,6 @@ void pageParamsDraw(void){
   lcdPrint(9, 38, "TESTER v13", 2);
   SSD1306_UpdateScreen();
   HAL_Delay(500);
-//  HAL_Delay(2000);//нужно для холодной загрузки мипа
   SSD1306_Clear();
 //  lastPing = HAL_GetTick()-1000;
   /* USER CODE END 2 */
@@ -514,7 +506,7 @@ while (1){
 		if (page==2) {selected++; if (selected > calibRestriction) {selected=0;}} 	//calib
 		if (page==3) {selected++; if (selected > 5) {selected=0;}} 					//settingss
 		if (page==20) {selected++;if (selected > 5) {selected=0;}}  				//calib
-		if (page==21) {digitSelected++;if (digitSelected > 9) {digitSelected=0;}}  			//digit
+		if (page==21) {digitSelected++;if (digitSelected > 9) {digitSelected=0;}}  	//digit
 	  }
 	}
 
