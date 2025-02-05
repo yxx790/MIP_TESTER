@@ -299,8 +299,9 @@ void setPGSfunk(void){
 	while (HAL_GetTick()-lastPing < 1100) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[10]={0};
+	sprintf (msg, "CALB %.4s", volPercent);
+	lcdPrintUpdate(11, 22, msg,   2);
 	sprintf (msg, "CALB %s\r", volPercent);
-	lcdPrintUpdate(20, 22, msg,   2);
 	HAL_Delay(800);
 	uint8_t rx_buff[15]={0};
 	MX_USART2_UART_Init();
@@ -442,9 +443,10 @@ void pageParamsDraw(void){
   MX_I2C1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+//  HAL_Delay(1000);
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+//  HAL_Delay(1000);
   SSD1306_Init();
-
   lcdPrint(35, 0, "BOBER", 2);
   lcdPrint(35, 19, "KURWA", 2);
   lcdPrint(9, 38, "TESTER v13", 2);
