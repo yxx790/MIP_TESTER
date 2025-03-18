@@ -34,7 +34,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+//#define X0 0	//ssd1306
+#define X0 2	//sh1106
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -78,7 +79,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 void lcdPrint(uint8_t x, uint8_t y, char message[], uint8_t fontsize){
-	SSD1306_GotoXY(x, y);
+	SSD1306_GotoXY(X0 + x, y);
 	if 		(fontsize == 1) {SSD1306_Puts(message , &Font_7x10, 1);}
 	else if (fontsize == 2) {SSD1306_Puts(message , &Font_11x18, 1);}
 	else if (fontsize == 3) {SSD1306_Puts(message , &Font_16x26, 1);}
@@ -87,7 +88,7 @@ void lcdPrint(uint8_t x, uint8_t y, char message[], uint8_t fontsize){
 	else if (fontsize == 30) {SSD1306_Puts(message , &Font_16x26, 0);}
 }
 void lcdPrintSymbol(uint8_t x, uint8_t y, char Symbol, uint8_t fontsize){
-	SSD1306_GotoXY(x, y);
+	SSD1306_GotoXY(X0 + x, y);
 	if 		(fontsize == 1) {SSD1306_Putc(Symbol , &Font_7x10, 1);}
 	else if (fontsize == 2) {SSD1306_Putc(Symbol , &Font_11x18, 1);}
 	else if (fontsize == 3) {SSD1306_Putc(Symbol , &Font_16x26, 1);}
@@ -102,66 +103,66 @@ void lcdPrintUpdate(uint8_t x, uint8_t y, char message[], uint8_t fontsize){
 }
 
 void page0draw(void){
-	  if (HAL_GetTick()-lastPing > 1000){//таймаут опроса опроса
-		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
-		  uint8_t msg[]={0x46,0x0D};  uint8_t rx_buffer[73]={0};  MX_USART2_UART_Init();
+	if (HAL_GetTick()-lastPing > 1000){//таймаут опроса опроса
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
+		uint8_t msg[]={0x46,0x0D};  uint8_t rx_buffer[73]={0};  MX_USART2_UART_Init();
 
-		  HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
-		  HAL_UART_Receive(&huart2, rx_buffer, 73, 100);
-		  if (rx_buffer[72] != 0x0D) {memset(rx_buffer, 0x20, sizeof(rx_buffer)/sizeof(rx_buffer[0]));}
-		  lastPing = HAL_GetTick();
+		HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
+		HAL_UART_Receive(&huart2, rx_buffer, 73, 100);
+		if (rx_buffer[72] != 0x0D) {memset(rx_buffer, 0x20, sizeof(rx_buffer)/sizeof(rx_buffer[0]));}
+		lastPing = HAL_GetTick();
 
-		  char C[6]={0};  char C1[6]={0};
-		  strncpy(C , &rx_buffer[43] , 5);
-		  strncpy(C1 , &rx_buffer[49] , 5);
-		  lcdPrint(0, 0, "C:        C1:", 1);
-		  lcdPrint(21, 0, C, 1); lcdPrint(91, 0, C1, 1);
-//		  	  lcdPrint(0, 0, rx_buffer, 1);//показать буфер
+		char C[6]={0};  char C1[6]={0};
+		strncpy(C , &rx_buffer[43] , 5);
+		strncpy(C1 , &rx_buffer[49] , 5);
+		lcdPrint(0, 0, "C:        C1:", 1);
+		lcdPrint(21, 0, C, 1); lcdPrint(91, 0, C1, 1);
+	//		  	  lcdPrint(0, 0, rx_buffer, 1);//показать буфер
 
-		  char sn1[5]={0};	  char sn2[5]={0};
-		  strncpy(sn1 , &rx_buffer[61] , 4);
-		  strncpy(sn2 , &rx_buffer[65] , 4);
-		  lcdPrint(0, 13, "02", 2); lcdPrint(28, 13, sn1, 2); lcdPrint(78, 13, sn2, 2);
+		char sn1[5]={0};	  char sn2[5]={0};
+		strncpy(sn1 , &rx_buffer[61] , 4);
+		strncpy(sn2 , &rx_buffer[65] , 4);
+		lcdPrint(0, 13, "02", 2); lcdPrint(28, 13, sn1, 2); lcdPrint(78, 13, sn2, 2);
 
-		  uint8_t status[6]={0};
-		  strncpy(status , &rx_buffer[55] , 5);
-		  lcdPrint(0, 33, "status:", 1); lcdPrint(49, 33, status, 1);
+		uint8_t status[6]={0};
+		strncpy(status , &rx_buffer[55] , 5);
+		lcdPrint(0, 33, "status:", 1); lcdPrint(49, 33, status, 1);
 
 	//	  char message[20]="";
-		  char message[20]={0};
-		  memset(message,' ',sizeof(message)/sizeof(message[0]));
-		  lcdPrint(0, 43, message, 1);
-		  if		(status[3] == '0' && status[4] == '0') {strcpy(message , "OK");}
-		  else if 	(status[3] == '1' && status[4] == '0') {strcpy(message , "warming up");}
-		  else if	(status[3] == '1' && status[4] == '1') {strcpy(message , "too many pings");}
-		  else if 	(status[3] == '2' && status[4] == '1') {strcpy(message , "dt/sec > 0.6 deg/s");}
-		  else if 	(status[3] == '2' && status[4] == '2') {strcpy(message , "dt/sec > 2 deg/s");}
-		  else if 	(status[3] == '2' && status[4] == '4') {strcpy(message , "dt; Zero < 0");}
-		  else if 	(status[3] == '3' && status[4] == '0') {strcpy(message , "Ur or Us < min");}
-		  else if 	(status[3] == '3' && status[4] == '1') {strcpy(message , "Zero < 0");}
-		  else if 	(status[3] == '4' && status[4] == '0') {strcpy(message , "temp not in range");}
-		  else if 	(status[3] == '5' && status[4] == '0') {strcpy(message , "rapid val changes");}
-		  else if 	(status[3] == '5' && status[4] == '1') {strcpy(message , "hardware error");}
-		  else if 	(status[3] == '9' && status[4] == '0') {strcpy(message , "software error");}
-		  else 											   {strcpy(message , "unknown");}
-		  lcdPrint(0, 43, message, 1);
+		char message[20]={0};
+		memset(message,' ',sizeof(message)/sizeof(message[0]));
+		lcdPrint(0, 43, message, 1);
+		if		(status[3] == '0' && status[4] == '0') {strcpy(message , "OK");}
+		else if 	(status[3] == '1' && status[4] == '0') {strcpy(message , "warming up");}
+		else if	(status[3] == '1' && status[4] == '1') {strcpy(message , "too many pings");}
+		else if 	(status[3] == '2' && status[4] == '1') {strcpy(message , "dt/sec > 0.6 deg/s");}
+		else if 	(status[3] == '2' && status[4] == '2') {strcpy(message , "dt/sec > 2 deg/s");}
+		else if 	(status[3] == '2' && status[4] == '4') {strcpy(message , "dt; Zero < 0");}
+		else if 	(status[3] == '3' && status[4] == '0') {strcpy(message , "Ur or Us < min");}
+		else if 	(status[3] == '3' && status[4] == '1') {strcpy(message , "Zero < 0");}
+		else if 	(status[3] == '4' && status[4] == '0') {strcpy(message , "temp not in range");}
+		else if 	(status[3] == '5' && status[4] == '0') {strcpy(message , "rapid val changes");}
+		else if 	(status[3] == '5' && status[4] == '1') {strcpy(message , "hardware error");}
+		else if 	(status[3] == '9' && status[4] == '0') {strcpy(message , "software error");}
+		else 											   {strcpy(message , "unknown");}
+		lcdPrint(0, 43, message, 1);
 
 	//	  char message2[10]="";
-		  char message2[10]={0};
-		  if (status[2] == '1') {strcpy(message2 , "LowPWR");}
-		  else if (status[2] == '0') {strcpy(message2 , "      ");}
-		  else {strcpy(message2 , "unknown");}
-		  lcdPrint(84, 33, message2, 1);
+		char message2[10]={0};
+		if (status[2] == '1') {strcpy(message2 , "LowPWR");}
+		else if (status[2] == '0') {strcpy(message2 , "      ");}
+		else {strcpy(message2 , "unknown");}
+		lcdPrint(84, 33, message2, 1);
 
-		  char Um[6]={0};  char Ur[6]={0};
-		  strncpy(Um , &rx_buffer[19] , 5);
-		  strncpy(Ur , &rx_buffer[13] , 5);
-		  lcdPrint(0, 53, "Um:       Ur:", 1);
-		  lcdPrint(21, 53, Um, 1); lcdPrint(91, 53, Ur, 1);
+		char Um[6]={0};  char Ur[6]={0};
+		strncpy(Um , &rx_buffer[19] , 5);
+		strncpy(Ur , &rx_buffer[13] , 5);
+		lcdPrint(0, 53, "Um:       Ur:", 1);
+		lcdPrint(21, 53, Um, 1); lcdPrint(91, 53, Ur, 1);
 
-		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
-		  SSD1306_UpdateScreen();
-	  }
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
+		SSD1306_UpdateScreen();
+	}
 }
 void pageMenuDraw(void){//menu
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
@@ -290,7 +291,7 @@ void pageCalib50draw(void){
 void pageDigitSelect(void){
 	lcdPrint(0, 0, "              ", 2);
 	for (uint8_t i = 0; i < 10; i++) {
-		digitSelected == i ? lcdPrintSymbol(4+i*12, 0, i+48, 20)	:	lcdPrintSymbol(4+i*12, 0, i+48, 2);
+		digitSelected == i ? lcdPrintSymbol(4+i*11, 0, i+48, 20)	:	lcdPrintSymbol(4+i*11, 0, i+48, 2);
 	}
 	SSD1306_UpdateScreen();
 }
@@ -401,23 +402,23 @@ void LOWPWR1(void){
 
 void pageParamsDraw(void){
 	if (HAL_GetTick()-lastPing > 1100){//таймаут опроса опроса
-		 HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
-		 uint8_t msg[]={0x46,0x0D};  uint8_t rx_buffer[73]={0};  MX_USART2_UART_Init();
-		 HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
-		 HAL_UART_Receive(&huart2, rx_buffer, 73, 100);
-		 lastPing = HAL_GetTick();
-		 char C[6]={0}; char C1[6]={0}; char Um[6]={0}; char Ur[6]={0}; char Stz0[6]={0}; char Stz[6]={0}; char St[6]={0};  char Stzkt[6]={0};
-		 strncpy(C , &rx_buffer[43] , 5); strncpy(C1 , &rx_buffer[49] , 5);
-		 strncpy(Stz0 , &rx_buffer[25] , 5); strncpy(Stz , &rx_buffer[31] , 5);
-		 strncpy(St , &rx_buffer[7] , 5); strncpy(Stzkt , &rx_buffer[37] , 5);
-		 strncpy(Um , &rx_buffer[19] , 5);  strncpy(Ur , &rx_buffer[13] , 5);
-		 lcdPrint(0, 0, "C :     ", 1); lcdPrint(21, 0, C, 1); lcdPrint(63, 0, "C1 :     ", 1); lcdPrint(91, 0, C1, 1);
-		 lcdPrint(0, 15, "S0:     ", 1); lcdPrint(21, 15, Stz0, 1);	lcdPrint(63, 15, "Stz:     ", 1); lcdPrint(91, 15, Stz, 1);
-		 lcdPrint(0, 25, "St:     ", 1); lcdPrint(21, 25, St, 1);	lcdPrint(63, 25, "Skt:     ", 1); lcdPrint(91, 25, Stzkt, 1);
-		 lcdPrint(0, 40, "Um:     ", 1); lcdPrint(21, 40, Um, 1);  lcdPrint(63, 40, "Ur :     ", 1);  lcdPrint(91, 40, Ur, 1);
-		 lcdPrint(0, 53, " Exit",   1);	if (selected == 0) {lcdPrint(0, 53, "-", 1);};
-		 HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
-		 SSD1306_UpdateScreen();
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
+		uint8_t msg[]={0x46,0x0D};  uint8_t rx_buffer[73]={0};  MX_USART2_UART_Init();
+		HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
+		HAL_UART_Receive(&huart2, rx_buffer, 73, 100);
+		lastPing = HAL_GetTick();
+		char C[6]={0}; char C1[6]={0}; char Um[6]={0}; char Ur[6]={0}; char Stz0[6]={0}; char Stz[6]={0}; char St[6]={0};  char Stzkt[6]={0};
+		strncpy(C , &rx_buffer[43] , 5); strncpy(C1 , &rx_buffer[49] , 5);
+		strncpy(Stz0 , &rx_buffer[25] , 5); strncpy(Stz , &rx_buffer[31] , 5);
+		strncpy(St , &rx_buffer[7] , 5); strncpy(Stzkt , &rx_buffer[37] , 5);
+		strncpy(Um , &rx_buffer[19] , 5);  strncpy(Ur , &rx_buffer[13] , 5);
+		lcdPrint(0, 0, "C :     ", 1); lcdPrint(21, 0, C, 1); lcdPrint(63, 0, "C1 :     ", 1); lcdPrint(91, 0, C1, 1);
+		lcdPrint(0, 15, "S0:     ", 1); lcdPrint(21, 15, Stz0, 1);	lcdPrint(63, 15, "Stz:     ", 1); lcdPrint(91, 15, Stz, 1);
+		lcdPrint(0, 25, "St:     ", 1); lcdPrint(21, 25, St, 1);	lcdPrint(63, 25, "Skt:     ", 1); lcdPrint(91, 25, Stzkt, 1);
+		lcdPrint(0, 40, "Um:     ", 1); lcdPrint(21, 40, Um, 1);  lcdPrint(63, 40, "Ur :     ", 1);  lcdPrint(91, 40, Ur, 1);
+		lcdPrint(0, 53, " Exit",   1);	if (selected == 0) {lcdPrint(0, 53, "-", 1);};
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
+		SSD1306_UpdateScreen();
 	}
 }
   /* USER CODE END 1 */
@@ -425,34 +426,33 @@ void pageParamsDraw(void){
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  	HAL_Init();
 
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
 
   /* Configure the system clock */
-  SystemClock_Config();
+  	SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_I2C1_Init();
-  MX_USART2_UART_Init();
+  	MX_GPIO_Init();
+  	MX_I2C1_Init();
+  	MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 //  HAL_Delay(1000);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
-//  HAL_Delay(1000);
-  SSD1306_Init();
-  lcdPrint(35, 0, "BOBER", 2);
-  lcdPrint(35, 19, "KURWA", 2);
-  lcdPrint(9, 38, "TESTER v13", 2);
-  SSD1306_UpdateScreen();
-  HAL_Delay(500);
-  SSD1306_Clear();
+  	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+	SSD1306_Init();
+	lcdPrint(35, 0, "BOBER", 2);
+	lcdPrint(35, 19, "KURWA", 2);
+	lcdPrint(9, 38, "TESTER v13", 2);
+	SSD1306_UpdateScreen();
+	HAL_Delay(500);
+	SSD1306_Clear();
 //  lastPing = HAL_GetTick()-1000;
   /* USER CODE END 2 */
 
@@ -463,53 +463,53 @@ while (1){
 	_Bool key1_state = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12);
 	if(key1_state == 0 && !short_state && (ms - time_key1) > 50) {short_state = 1; long_state = 0; time_key1 = ms;}
 	else if(key1_state == 0 && !long_state && (ms - time_key1) > 500){// действие на длинное нажатие
-	  long_state = 1;
+		long_state = 1;
 
-	  if 		(page == 0 && selected == 7)	 {calibRestriction = 6;}//снять ограничение на калибровку
-	  if 		(page == 0)						{page = 1; selected = 1; SSD1306_Clear();}//to menu
+		if 		(page == 0 && selected == 7)	 {calibRestriction = 6;}//снять ограничение на калибровку
+		if 		(page == 0)						{page = 1; selected = 1; SSD1306_Clear();}//to menu
 
-	  else if 	(page == 1 && selected == 0)	{page = 0; selected = 0; SSD1306_Clear();}//exit
-	  else if 	(page == 1 && selected == 1)	{page = 2; selected = 2; SSD1306_Clear();}//to calibration
-	  else if 	(page == 1 && selected == 2)	{page = 3; selected = 1; SSD1306_Clear();}//settings
-	  else if 	(page == 1 && selected == 3)	{page = 4; selected = 0; SSD1306_Clear();}//params
-//	  else if 	(page == 1 && selected == 4)	{page = 5; selected = 0; SSD1306_Clear();}//rezerv1
-//	  else if 	(page == 1 && selected == 5)	{page = 6; selected = 0; SSD1306_Clear();}//rezerv2
+		else if 	(page == 1 && selected == 0)	{page = 0; selected = 0; SSD1306_Clear();}//exit
+		else if 	(page == 1 && selected == 1)	{page = 2; selected = 2; SSD1306_Clear();}//to calibration
+		else if 	(page == 1 && selected == 2)	{page = 3; selected = 1; SSD1306_Clear();}//settings
+		else if 	(page == 1 && selected == 3)	{page = 4; selected = 0; SSD1306_Clear();}//params
+	//	  else if 	(page == 1 && selected == 4)	{page = 5; selected = 0; SSD1306_Clear();}//rezerv1
+	//	  else if 	(page == 1 && selected == 5)	{page = 6; selected = 0; SSD1306_Clear();}//rezerv2
 
-	  else if 	(page == 2 && selected == 0)	{page = 1; selected = 1; calibRestriction = 3; SSD1306_Clear();}//exit to menu
-	  else if 	(page == 2 && selected == 1)	{}													//help
-	  else if 	(page == 2 && selected == 2)	{lcdPrintUpdate(0, 0, "|", 1); zero();}				//zero
-	  else if 	(page == 2 && selected == 3)	{page = 20; selected = 1; SSD1306_Clear();}			//set 50 page
-	  else if 	(page == 2 && selected == 4)	{lcdPrintUpdate(0, 22, "|", 1); zero0();}			//zero0
-	  else if 	(page == 2 && selected == 5)	{lcdPrintUpdate(0, 32, "|", 1); init();}			//init
-	  else if 	(page == 2 && selected == 6)	{lcdPrintUpdate(0, 42, "|", 1); zero2();}			//zero2
+		else if 	(page == 2 && selected == 0)	{page = 1; selected = 1; calibRestriction = 3; SSD1306_Clear();}//exit to menu
+		else if 	(page == 2 && selected == 1)	{}													//help
+		else if 	(page == 2 && selected == 2)	{lcdPrintUpdate(0, 0, "|", 1); zero();}				//zero
+		else if 	(page == 2 && selected == 3)	{page = 20; selected = 1; SSD1306_Clear();}			//set 50 page
+		else if 	(page == 2 && selected == 4)	{lcdPrintUpdate(0, 22, "|", 1); zero0();}			//zero0
+		else if 	(page == 2 && selected == 5)	{lcdPrintUpdate(0, 32, "|", 1); init();}			//init
+		else if 	(page == 2 && selected == 6)	{lcdPrintUpdate(0, 42, "|", 1); zero2();}			//zero2
 
-	  else if 	(page == 20 && selected == 5)	{setPGSfunk();}										//set PGS funk
-	  else if 	(page == 20 && selected == 0)	{page = 2; selected = 3; SSD1306_Clear();}			//exit to menu
-	  else if 	(page == 20 && selected < 5)	{page = 21; digitSelected = volPercent[selected-1]-48;}				//
+		else if 	(page == 20 && selected == 5)	{setPGSfunk();}										//set PGS funk
+		else if 	(page == 20 && selected == 0)	{page = 2; selected = 3; SSD1306_Clear();}			//exit to menu
+		else if 	(page == 20 && selected < 5)	{page = 21; digitSelected = volPercent[selected-1]-48;}				//
 
 
-	  else if 	(page == 21)					{page = 20; volPercent[selected-1] = digitSelected+48;}				//change digit
+		else if 	(page == 21)					{page = 20; volPercent[selected-1] = digitSelected+48;}				//change digit
 
-	  else if 	(page == 3 && selected == 0)	{page = 1; selected = 2; SSD1306_Clear();}			//exit to menu
-	  else if 	(page == 3 && selected == 1)	{lcdPrintUpdate(0, 0, "|", 1); oemUserQuestion();}	//oemUserQuestion
-	  else if 	(page == 3 && selected == 2)	{lcdPrintUpdate(0, 10, "|", 1); oem();}		 		//oem
-	  else if 	(page == 3 && selected == 3)	{lcdPrintUpdate(0, 20, "|", 1); user();}		 	//user
-	  else if 	(page == 3 && selected == 4)	{lcdPrintUpdate(0, 30, "|", 1); LOWPWR0();}			//LOWPWR0
-	  else if 	(page == 3 && selected == 5)	{lcdPrintUpdate(0, 40, "|", 1); LOWPWR1();}			//LOWPWR1
+		else if 	(page == 3 && selected == 0)	{page = 1; selected = 2; SSD1306_Clear();}			//exit to menu
+		else if 	(page == 3 && selected == 1)	{lcdPrintUpdate(0, 0, "|", 1); oemUserQuestion();}	//oemUserQuestion
+		else if 	(page == 3 && selected == 2)	{lcdPrintUpdate(0, 10, "|", 1); oem();}		 		//oem
+		else if 	(page == 3 && selected == 3)	{lcdPrintUpdate(0, 20, "|", 1); user();}		 	//user
+		else if 	(page == 3 && selected == 4)	{lcdPrintUpdate(0, 30, "|", 1); LOWPWR0();}			//LOWPWR0
+		else if 	(page == 3 && selected == 5)	{lcdPrintUpdate(0, 40, "|", 1); LOWPWR1();}			//LOWPWR1
 
-	  else if 	(page == 4 && selected == 0)	{page = 1; selected = 3; SSD1306_Clear();}			//exit to menu
+		else if 	(page == 4 && selected == 0)	{page = 1; selected = 3; SSD1306_Clear();}			//exit to menu
 	}
 	else if(key1_state == 1 && short_state && (ms - time_key1) > 50){
-	  short_state = 0;
-	  time_key1 = ms;
-	  if(!long_state){// действие на короткое нажатие
-		if (page==0) {selected++; if (selected > 7) {selected=0;}} 					//0page
-		if (page==1) {selected++; if (selected > 3) {selected=0;}} 					//menu
-		if (page==2) {selected++; if (selected > calibRestriction) {selected=0;}} 	//calib
-		if (page==3) {selected++; if (selected > 5) {selected=0;}} 					//settingss
-		if (page==20) {selected++;if (selected > 5) {selected=0;}}  				//calib
-		if (page==21) {digitSelected++;if (digitSelected > 9) {digitSelected=0;}}  	//digit
-	  }
+		short_state = 0;
+		time_key1 = ms;
+		if(!long_state){// действие на короткое нажатие
+			if (page==0) {selected++; if (selected > 7) {selected=0;}} 					//0page
+			if (page==1) {selected++; if (selected > 3) {selected=0;}} 					//menu
+			if (page==2) {selected++; if (selected > calibRestriction) {selected=0;}} 	//calib
+			if (page==3) {selected++; if (selected > 5) {selected=0;}} 					//settingss
+			if (page==20) {selected++;if (selected > 5) {selected=0;}}  				//calib
+			if (page==21) {digitSelected++;if (digitSelected > 9) {digitSelected=0;}}  	//digit
+	  	}
 	}
 
 	if (page == 0) {page0draw();}
