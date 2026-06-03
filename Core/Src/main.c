@@ -104,7 +104,7 @@ void lcdPrintUpdate(uint8_t x, uint8_t y, char message[], uint8_t fontsize){
 }
 
 void page0draw(void){
-	if (HAL_GetTick()-lastPing > 1000){//таймаут опроса опроса
+	if (HAL_GetTick()-lastPing > 1300){//таймаут опроса опроса
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		uint8_t msg[]={0x46,0x0D};  uint8_t rx_buffer[73]={0};  MX_USART2_UART_Init();
 
@@ -195,7 +195,7 @@ void pageCalibrationDraw(void){//calibration
 	lcdPrint(0, 42, " Zero2 ",  1);	if (selected == 6) {lcdPrint(0, 42, "-", 1);};
 	lcdPrint(0, 53, " Exit",   1);	if (selected == 0) {lcdPrint(0, 53, "-", 1);};
 
-	if (HAL_GetTick()-lastPing > 1100){
+	if (HAL_GetTick()-lastPing > 1300){
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		MX_USART2_UART_Init(); uint8_t msg[] = "CCS\r"; uint8_t rx_bufferA[19] = {0};
 		HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
@@ -218,7 +218,7 @@ void pageCalibrationDraw(void){//calibration
 	SSD1306_UpdateScreen();
 }
 void zero(void){
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[]="ZERO\r";
 	uint8_t rx_buff[10]={0};
@@ -233,7 +233,7 @@ void zero(void){
 	HAL_Delay(1000);
 }
 void zero0(void){
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[]="ZERO0\r";
 	uint8_t rx_buff[10]={0};
@@ -248,7 +248,7 @@ void zero0(void){
 	HAL_Delay(1000);
 }
 void init(void){
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[]="INIT\r";
 	uint8_t rx_buff[10]={0};
@@ -263,7 +263,7 @@ void init(void){
 	HAL_Delay(1000);
 }
 void zero2(void){
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[]="ZERO2\r";
 	uint8_t rx_buff[10]={0};
@@ -298,7 +298,7 @@ void pageDigitSelect(void){
 }
 void setPGSfunk(void){
 	SSD1306_Clear();
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 	uint8_t msg[10]={0};
 	sprintf (msg, "CALB %.4s", volPercent);
@@ -326,7 +326,7 @@ void pageSettingsDraw(void){
 	SSD1306_UpdateScreen();
 }
 void oemUserQuestion(void){
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		lcdPrint(7, 0,	"        ",   1);
 		uint8_t msg[]="UART?\r";	uint8_t rx_buff[10]={0};	MX_USART2_UART_Init();
@@ -340,7 +340,7 @@ void oemUserQuestion(void){
 		HAL_Delay(1000);
 }
 void oem(void){
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		lcdPrint(7, 10,	"        ",   1);
 		uint8_t msg[]="OEM 0000\r";	uint8_t rx_buff[10]={0};	MX_USART2_UART_Init();
@@ -355,7 +355,7 @@ void oem(void){
 		HAL_Delay(1000);
 }
 void user(void){
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		lcdPrint(7, 20,	"        ",   1);
 		uint8_t msg[]="USER\r";	uint8_t rx_buff[10]={0};	MX_USART2_UART_Init();
@@ -369,7 +369,7 @@ void user(void){
 		HAL_Delay(1000);
 }
 void LOWPWR0(void){
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 		lcdPrint(7, 30,	"        ",   1);
 		uint8_t rx_buff[15]={0};
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
@@ -385,7 +385,7 @@ void LOWPWR0(void){
 		HAL_Delay(1000);
 }
 void LOWPWR1(void){
-	while (HAL_GetTick()-lastPing < 1100) { }
+	while (HAL_GetTick()-lastPing < 1300) { }
 		lcdPrint(7, 40,	"        ",   1);
 		uint8_t rx_buff[15]={0};
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
@@ -402,7 +402,7 @@ void LOWPWR1(void){
 }
 
 void pageParamsDraw(void){
-	if (HAL_GetTick()-lastPing > 1100){//таймаут опроса опроса
+	if (HAL_GetTick()-lastPing > 1300){//таймаут опроса опроса
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
 		uint8_t msg[]={0x46,0x0D};  uint8_t rx_buffer[73]={0};  MX_USART2_UART_Init();
 		HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
