@@ -448,11 +448,14 @@ void pageParamsDraw(void){
 //  HAL_Delay(1000);
   	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
 	SSD1306_Init();
-	lcdPrint(35, 0, "BOBER", 2);
-	lcdPrint(35, 19, "KURWA", 2);
-	lcdPrint(9, 38, "TESTER v13", 2);
+//	lcdPrint(35, 0, "BOBER", 2);
+//	lcdPrint(35, 19, "KURWA", 2);
+//	lcdPrint(9, 38, "TESTER v13", 2);
+	lcdPrint(5, 0, "BOBER KURWA", 2);
+	lcdPrint(10, 19, "TESTER v13", 2);
+	lcdPrint(45, 52, "НПО УРАЛТЕХ", 1);
 	SSD1306_UpdateScreen();
-	HAL_Delay(500);
+	HAL_Delay(1000);
 	SSD1306_Clear();
 //  lastPing = HAL_GetTick()-1000;
   /* USER CODE END 2 */

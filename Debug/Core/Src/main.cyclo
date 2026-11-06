@@ -19,8 +19,8 @@
 ../Core/Src/main.c:371:6:LOWPWR0	3
 ../Core/Src/main.c:387:6:LOWPWR1	3
 ../Core/Src/main.c:404:6:pageParamsDraw	3
-../Core/Src/main.c:534:6:SystemClock_Config	4
-../Core/Src/main.c:581:13:MX_I2C1_Init	4
-../Core/Src/main.c:629:13:MX_USART2_UART_Init	2
-../Core/Src/main.c:664:13:MX_GPIO_Init	1
-../Core/Src/main.c:714:6:Error_Handler	1
+../Core/Src/main.c:537:6:SystemClock_Config	4
+../Core/Src/main.c:584:13:MX_I2C1_Init	4
+../Core/Src/main.c:632:13:MX_USART2_UART_Init	2
+../Core/Src/main.c:667:13:MX_GPIO_Init	1
+../Core/Src/main.c:717:6:Error_Handler	1

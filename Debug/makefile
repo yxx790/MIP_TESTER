@@ -66,8 +66,8 @@ all: main-build
 main-build: MIP_TESTER.elf secondary-outputs
 
 # Tool invocations
-MIP_TESTER.elf MIP_TESTER.map: $(OBJS) $(USER_OBJS) C:\Users\user\STM32CubeIDE\workspace_1.16.1\MIP_TESTER\STM32F030C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "MIP_TESTER.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\user\STM32CubeIDE\workspace_1.16.1\MIP_TESTER\STM32F030C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MIP_TESTER.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+MIP_TESTER.elf MIP_TESTER.map: $(OBJS) $(USER_OBJS) C:\Users\PC\STM32CubeIDE\workspace_1.16.0\MIP_TESTER\STM32F030C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "MIP_TESTER.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\PC\STM32CubeIDE\workspace_1.16.0\MIP_TESTER\STM32F030C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MIP_TESTER.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -19,8 +19,8 @@
 ../Core/Src/main.c:371:6:LOWPWR0	56	static
 ../Core/Src/main.c:387:6:LOWPWR1	56	static
 ../Core/Src/main.c:404:6:pageParamsDraw	176	static
-../Core/Src/main.c:534:6:SystemClock_Config	96	static
-../Core/Src/main.c:581:13:MX_I2C1_Init	8	static
-../Core/Src/main.c:629:13:MX_USART2_UART_Init	8	static
-../Core/Src/main.c:664:13:MX_GPIO_Init	56	static
-../Core/Src/main.c:714:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/main.c:537:6:SystemClock_Config	96	static
+../Core/Src/main.c:584:13:MX_I2C1_Init	8	static
+../Core/Src/main.c:632:13:MX_USART2_UART_Init	8	static
+../Core/Src/main.c:667:13:MX_GPIO_Init	56	static
+../Core/Src/main.c:717:6:Error_Handler	8	static,ignoring_inline_asm

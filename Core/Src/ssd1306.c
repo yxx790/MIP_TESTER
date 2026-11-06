@@ -177,10 +177,10 @@ uint8_t SSD1306_Init(void) {
 	while(p>0)
 		p--;
 
-	/* Init LCD */
+	/* Init LCD SSD1306*/
 	SSD1306_WRITECOMMAND(0xAE); //display off
 	SSD1306_WRITECOMMAND(0x20); //Set Memory Addressing Mode
-	SSD1306_WRITECOMMAND(0x10); //00,Horizontal Addressing Mode;01,Vertical Addressing Mode;10,Page Addressing Mode (RESET);11,Invalid
+	SSD1306_WRITECOMMAND(0x10);
 	SSD1306_WRITECOMMAND(0xB0); //Set Page Start Address for Page Addressing Mode,0-7
 	SSD1306_WRITECOMMAND(0xC8); //Set COM Output Scan Direction
 	SSD1306_WRITECOMMAND(0x00); //---set low column address
@@ -193,7 +193,7 @@ uint8_t SSD1306_Init(void) {
 	SSD1306_WRITECOMMAND(0xA8); //--set multiplex ratio(1 to 64)
 	SSD1306_WRITECOMMAND(0x3F); //
 	SSD1306_WRITECOMMAND(0xA4); //0xa4,Output follows RAM content;0xa5,Output ignores RAM content
-	SSD1306_WRITECOMMAND(0xD3); //-set display offset
+	SSD1306_WRITECOMMAND(0xD3); //-set display offset //vertical
 	SSD1306_WRITECOMMAND(0x00); //-not offset
 	SSD1306_WRITECOMMAND(0xD5); //--set display clock divide ratio/oscillator frequency
 	SSD1306_WRITECOMMAND(0xF0); //--set divide ratio
@@ -207,8 +207,47 @@ uint8_t SSD1306_Init(void) {
 	SSD1306_WRITECOMMAND(0x14); //
 	SSD1306_WRITECOMMAND(0xAF); //--turn on SSD1306 panel
 
+	/* Init LCD SH1106*/
+//	SSD1306_WRITECOMMAND(0xAE); //display off
 
-	SSD1306_WRITECOMMAND(SSD1306_DEACTIVATE_SCROLL);
+//	SSD1306_WRITECOMMAND(0xD7);
+//	SSD1306_WRITECOMMAND(0x01);
+
+//	SSD1306_WRITECOMMAND(0xD5); // 0xD5
+//	SSD1306_WRITECOMMAND(0x80);
+//
+//	SSD1306_WRITECOMMAND(0xA8); //сколько строк будет использовано.
+//	SSD1306_WRITECOMMAND(0x3F); //(128x64) 64 - строки. SH1106_LCDHEIGHT - 1
+//
+//	SSD1306_WRITECOMMAND(0xD3); // смещение.
+//	SSD1306_WRITECOMMAND(0x0); // смещение 0.
+//	SSD1306_WRITECOMMAND(0x0); // 01xx xxxx - начальное строка 0.
+//	SSD1306_WRITECOMMAND(0x8D);
+//
+//	SSD1306_WRITECOMMAND(0x10);
+//
+//	SSD1306_WRITECOMMAND(0x20);
+//	SSD1306_WRITECOMMAND(0x00);
+//	SSD1306_WRITECOMMAND(0xA0);
+//	SSD1306_WRITECOMMAND(0xC8);
+//
+//	SSD1306_WRITECOMMAND(0xDA);                    // 0xDA
+//	SSD1306_WRITECOMMAND(0x12);
+//	SSD1306_WRITECOMMAND(0x81);                   // 0x81
+//	SSD1306_WRITECOMMAND(0x9F);
+//
+//	SSD1306_WRITECOMMAND(0xD9);
+//	SSD1306_WRITECOMMAND(0x22);
+//
+//	SSD1306_WRITECOMMAND(0xDB);
+//	SSD1306_WRITECOMMAND(0x40);
+//	SSD1306_WRITECOMMAND(0xA4);
+//	SSD1306_WRITECOMMAND(0xA6);
+
+//	SSD1306_WRITECOMMAND(0xAF); //--turn on SSD1306 panel
+
+
+//	SSD1306_WRITECOMMAND(SSD1306_DEACTIVATE_SCROLL);
 
 	/* Clear screen */
 	SSD1306_Fill(SSD1306_COLOR_BLACK);
@@ -258,6 +297,7 @@ void SSD1306_Fill(SSD1306_COLOR_t color) {
 }
 
 void SSD1306_DrawPixel(uint16_t x, uint16_t y, SSD1306_COLOR_t color) {
+//	x += 2;
 	if (
 		x >= SSD1306_WIDTH ||
 		y >= SSD1306_HEIGHT
@@ -288,6 +328,9 @@ void SSD1306_GotoXY(uint16_t x, uint16_t y) {
 char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color) {
 	uint32_t i, b, j;
 
+	uint8_t flag = 0;//for Russian
+	if (ch > 126) {ch -= 65; flag = 1;}//for Russian
+
 	/* Check available space in LCD */
 	if (
 		SSD1306_WIDTH <= (SSD1306.CurrentX + Font->FontWidth) ||
@@ -313,6 +356,8 @@ char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color) {
 	SSD1306.CurrentX += Font->FontWidth;
 
 	/* Return character written */
+
+	if (flag) {ch += 65; flag = 0;}//for Russian
 	return ch;
 }
 
