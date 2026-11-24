@@ -318,9 +318,12 @@ void setPGSfunk(void){
 }
 void pageSettingsDraw(void){
 	lcdPrint(0, 50, " Exit", 	 1);		if (selected == 0) {lcdPrint(0, 50, "-", 1);};
-	lcdPrint(0, 0,	" OEM/USR?",   1);		if (selected == 1) {lcdPrint(0, 0, "-", 1);};
-	lcdPrint(0, 10, " set OEM",	 1);		if (selected == 2) {lcdPrint(0, 10, "-", 1);};
-	lcdPrint(0, 20, " set USER",	 1);	if (selected == 3) {lcdPrint(0, 20, "-", 1);};
+//	lcdPrint(0, 0,	" OEM/USR?",   1);		if (selected == 1) {lcdPrint(0, 0, "-", 1);};
+	lcdPrint(0, 0,	" OEM/USR?  AZero?  ",   1);	if (selected == 1) {lcdPrint(0, 0, "-", 1);}; if (selected == 6) {lcdPrint(7*10, 0, "-", 1);};
+//	lcdPrint(0, 10, " set OEM",	 1);		if (selected == 2) {lcdPrint(0, 10, "-", 1);};
+	lcdPrint(0, 10, " set OEM   AZero1 ",	 1);	if (selected == 2) {lcdPrint(0, 10, "-", 1);};if (selected == 7) {lcdPrint(7*10, 10, "-", 1);};
+//	lcdPrint(0, 20, " set USER",	 1);	if (selected == 3) {lcdPrint(0, 20, "-", 1);};
+	lcdPrint(0, 20, " set USER  AZero0",	 1);	if (selected == 3) {lcdPrint(0, 20, "-", 1);};if (selected == 8) {lcdPrint(7*10, 20, "-", 1);};
 	lcdPrint(0, 30, " LOWPWR_0",	 1);	if (selected == 4) {lcdPrint(0, 30, "-", 1);};
 	lcdPrint(0, 40, " LOWPWR_1",	 1);	if (selected == 5) {lcdPrint(0, 40, "-", 1);};
 	SSD1306_UpdateScreen();
@@ -400,7 +403,53 @@ void LOWPWR1(void){
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
 		HAL_Delay(1000);
 }
-
+void aZeroQuestion(void){
+	while (HAL_GetTick()-lastPing < 1300) { }
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
+		lcdPrint(7*11, 0,	"        ",   1);
+		uint8_t msg[]="AZERO?\r";	uint8_t rx_buff[10]={0};	MX_USART2_UART_Init();
+		HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
+		HAL_UART_Receive(&huart2, rx_buff, 10, 50);
+		lastPing = HAL_GetTick();
+//		lcdPrintUpdate(7*11, 0, *(rx_buff+2),  1);
+		if (rx_buff[7] == 'N' ) {lcdPrintUpdate(7*11, 0, "ON",  1);}
+		else if (rx_buff[7] == 'F' ) {lcdPrintUpdate(7*11, 0, "OFF",  1);}
+		else {lcdPrintUpdate(7*11, 0, "FAULT",  1);}
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
+		HAL_Delay(1000);
+}
+void aZeroOn(void){
+	while (HAL_GetTick()-lastPing < 1300) { }
+		lcdPrint(7*11, 10,	"        ",   1);
+		uint8_t rx_buff[15]={0};
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
+		uint8_t msg[]="AZERO ON\r";
+		MX_USART2_UART_Init();
+		HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
+		HAL_UART_Receive(&huart2, rx_buff, 15, 50);
+		lastPing = HAL_GetTick();
+		if (rx_buff[7] == 'N' ) {lcdPrintUpdate(7*11, 10, "ON OK",  1);}
+		else {lcdPrintUpdate(7*11, 10, "FAULT",  1);}
+//		lcdPrintUpdate(7, 40, rx_buff,  1);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
+		HAL_Delay(1000);
+}
+void aZeroOff(void){
+	while (HAL_GetTick()-lastPing < 1300) { }
+		lcdPrint(7*11, 20,	"        ",   1);
+		uint8_t rx_buff[15]={0};
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
+		uint8_t msg[]="AZERO OFF\r";
+		MX_USART2_UART_Init();
+		HAL_UART_Transmit(&huart2, msg, sizeof(msg), 50);
+		HAL_UART_Receive(&huart2, rx_buff, 15, 50);
+		lastPing = HAL_GetTick();
+		if (rx_buff[7] == 'F' ) {lcdPrintUpdate(7*11, 20, "OFF OK",  1);}
+		else {lcdPrintUpdate(7*11, 20, "FAULT",  1);}
+//		lcdPrintUpdate(7, 40, rx_buff,  1);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, SET);
+		HAL_Delay(1000);
+}
 void pageParamsDraw(void){
 	if (HAL_GetTick()-lastPing > 1300){//таймаут опроса опроса
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, RESET);
@@ -451,9 +500,9 @@ void pageParamsDraw(void){
 //	lcdPrint(35, 0, "BOBER", 2);
 //	lcdPrint(35, 19, "KURWA", 2);
 //	lcdPrint(9, 38, "TESTER v13", 2);
-	lcdPrint(5, 0, "BOBER KURWA", 2);
-	lcdPrint(10, 19, "TESTER v13", 2);
-	lcdPrint(45, 52, "НПО УРАЛТЕХ", 1);
+//	lcdPrint(5, 0, "BOBER KURWA", 2);
+//	lcdPrint(10, 19, "TESTER v13", 2);
+	lcdPrint(25, 30, "НПО УРАЛТЕХ", 1);
 	SSD1306_UpdateScreen();
 	HAL_Delay(1000);
 	SSD1306_Clear();
@@ -500,6 +549,9 @@ while (1){
 		else if 	(page == 3 && selected == 3)	{lcdPrintUpdate(0, 20, "|", 1); user();}		 	//user
 		else if 	(page == 3 && selected == 4)	{lcdPrintUpdate(0, 30, "|", 1); LOWPWR0();}			//LOWPWR0
 		else if 	(page == 3 && selected == 5)	{lcdPrintUpdate(0, 40, "|", 1); LOWPWR1();}			//LOWPWR1
+		else if 	(page == 3 && selected == 6)	{lcdPrintUpdate(7*10, 0, "|", 1); aZeroQuestion();}			//aZeroQuestion
+		else if 	(page == 3 && selected == 7)	{lcdPrintUpdate(7*10, 10, "|", 1); aZeroOn();}		//aZeroOn
+		else if 	(page == 3 && selected == 8)	{lcdPrintUpdate(7*10, 20, "|", 1); aZeroOff();}		//aZeroOff
 
 		else if 	(page == 4 && selected == 0)	{page = 1; selected = 3; SSD1306_Clear();}			//exit to menu
 	}
@@ -510,7 +562,7 @@ while (1){
 			if (page==0) {selected++; if (selected > 7) {selected=0;}} 					//0page
 			if (page==1) {selected++; if (selected > 3) {selected=0;}} 					//menu
 			if (page==2) {selected++; if (selected > calibRestriction) {selected=0;}} 	//calib
-			if (page==3) {selected++; if (selected > 5) {selected=0;}} 					//settingss
+			if (page==3) {selected++; if (selected > 8) {selected=0;}} 					//settingss
 			if (page==20) {selected++;if (selected > 5) {selected=0;}}  				//calib
 			if (page==21) {digitSelected++;if (digitSelected > 9) {digitSelected=0;}}  	//digit
 	  	}
