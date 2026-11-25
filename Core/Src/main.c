@@ -317,7 +317,7 @@ void setPGSfunk(void){
 	SSD1306_Clear();
 }
 void pageSettingsDraw(void){
-	lcdPrint(0, 50, " Exit", 	 1);		if (selected == 0) {lcdPrint(0, 50, "-", 1);};
+	lcdPrint(7*10, 40, " Exit", 	 1);		if (selected == 0) {lcdPrint(7*10, 40, "-", 1);};
 //	lcdPrint(0, 0,	" OEM/USR?",   1);		if (selected == 1) {lcdPrint(0, 0, "-", 1);};
 	lcdPrint(0, 0,	" OEM/USR?  AZero?  ",   1);	if (selected == 1) {lcdPrint(0, 0, "-", 1);}; if (selected == 6) {lcdPrint(7*10, 0, "-", 1);};
 //	lcdPrint(0, 10, " set OEM",	 1);		if (selected == 2) {lcdPrint(0, 10, "-", 1);};

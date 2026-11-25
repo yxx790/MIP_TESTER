@@ -4883,12 +4883,12 @@ void pageSettingsDraw(void){
  80026b6:	4664      	mov	r4, ip
  80026b8:	4663      	mov	r3, ip
  80026ba:	607b      	str	r3, [r7, #4]
-	lcdPrint(0, 50, " Exit", 	 1);		if (selected == 0) {lcdPrint(0, 50, "-", 1);};
+	lcdPrint(7*10, 40, " Exit", 	 1);		if (selected == 0) {lcdPrint(7*10, 40, "-", 1);};
  80026bc:	4a49      	ldr	r2, [pc, #292]	@ (80027e4 <pageSettingsDraw.21+0x134>)
  80026be:	46a4      	mov	ip, r4
  80026c0:	2301      	movs	r3, #1
- 80026c2:	2132      	movs	r1, #50	@ 0x32
- 80026c4:	2000      	movs	r0, #0
+ 80026c2:	2128      	movs	r1, #40	@ 0x28
+ 80026c4:	2046      	movs	r0, #70	@ 0x46
  80026c6:	f7fe fb83 	bl	8000dd0 <lcdPrint.0>
  80026ca:	4b47      	ldr	r3, [pc, #284]	@ (80027e8 <pageSettingsDraw.21+0x138>)
  80026cc:	781b      	ldrb	r3, [r3, #0]
@@ -4897,8 +4897,8 @@ void pageSettingsDraw(void){
  80026d2:	4a46      	ldr	r2, [pc, #280]	@ (80027ec <pageSettingsDraw.21+0x13c>)
  80026d4:	46a4      	mov	ip, r4
  80026d6:	2301      	movs	r3, #1
- 80026d8:	2132      	movs	r1, #50	@ 0x32
- 80026da:	2000      	movs	r0, #0
+ 80026d8:	2128      	movs	r1, #40	@ 0x28
+ 80026da:	2046      	movs	r0, #70	@ 0x46
  80026dc:	f7fe fb78 	bl	8000dd0 <lcdPrint.0>
 	lcdPrint(0, 0,	" OEM/USR?  AZero?  ",   1);	if (selected == 1) {lcdPrint(0, 0, "-", 1);}; if (selected == 6) {lcdPrint(7*10, 0, "-", 1);};
  80026e0:	4a43      	ldr	r2, [pc, #268]	@ (80027f0 <pageSettingsDraw.21+0x140>)
